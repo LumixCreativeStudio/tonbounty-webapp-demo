@@ -1,0 +1,40 @@
+<!-- index.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TONBounty Mini App - Demo</title>
+</head>
+<body>
+  <h2>TONBounty Mini App (Demo)</h2>
+  <div id="user">Memuat user...</div>
+  <input id="note" placeholder="Tulis pesan singkat..." />
+  <button id="send">Kirim ke Bot</button>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (!tg) {
+      document.body.innerHTML = "<p>Harus dibuka lewat Telegram (WebApp)</p>";
+      throw new Error("Not in Telegram WebApp");
+    }
+
+    // expand UI
+    tg.expand();
+
+    // tampilkan username (initDataUnsafe jadi bukan diverifikasi)
+    const userUnsafe = tg.initDataUnsafe?.user;
+    document.getElementById('user').innerText = userUnsafe ? `Halo, @${userUnsafe.username}` : 'Halo!';
+
+    document.getElementById('send').addEventListener('click', () => {
+      const note = document.getElementById('note').value || '';
+      // kirim ke bot — bot akan menerima message.web_app_data
+      tg.sendData(JSON.stringify({ note }));
+      // optional: tutup webapp
+      tg.close();
+    });
+
+    console.log('initData (raw):', tg.initData);
+  </script>
+</body>
+</html>
